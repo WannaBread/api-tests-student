@@ -12,3 +12,6 @@
 
 # Go workspace files
 .env.override
+
+# macOS
+.DS_Store

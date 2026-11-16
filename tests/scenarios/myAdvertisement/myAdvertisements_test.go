@@ -9,6 +9,7 @@ import (
 	"github.com/stretchr/testify/suite"
 	"github.com/tidwall/gjson"
 
+	"api-tests-template/internal/managers/advertisement"
 	"api-tests-template/internal/managers/auth"
 	"api-tests-template/internal/managers/auth/models"
 	"api-tests-template/internal/managers/myAdvertisements"
@@ -30,6 +31,10 @@ func (s *TestSuite) SetupSuite() {
 
 	base.Precondition("Авторизация пользователя с кредами из переменных окружения и получение его параметров")
 	s.loginData = auth.Login(s.T(), os.Getenv("TEST_LOGIN"), os.Getenv("TEST_PASSWORD"))
+
+	base.Precondition("Создаём объявление, чтобы список собственных объявлений гарантированно был не пустым")
+	advertisement.CreateTemporaryAdvertisement(s.T(), s.loginData.Token,
+		advertisement.NewAdvertisementRequest(advertisement.DefaultPhotosCount))
 }
 
 func (s *TestSuite) TearDownSuite() {

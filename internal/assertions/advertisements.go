@@ -8,13 +8,13 @@ import (
 	"api-tests-template/internal/managers/advertisements/models"
 )
 
-// ContainsAdvertisementByTitle проверяет наличие объявления с точным названием.
-func ContainsAdvertisementByTitle(t *testing.T, items []models.Advertisement, title string) {
+// ContainsAdvertisementByID проверяет наличие объявления с указанным id в результатах поиска.
+func ContainsAdvertisementByID(t *testing.T, items []models.Advertisement, id string) {
 	t.Helper()
 	for _, item := range items {
-		if item.Title == title {
+		if item.ID == id {
 			return
 		}
 	}
-	require.Failf(t, "Объявление не найдено", "В результатах поиска нет объявления с названием %q", title)
+	require.Failf(t, "Объявление не найдено", "В результатах поиска (%d шт.) нет объявления с id %s", len(items), id)
 }

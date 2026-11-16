@@ -1,0 +1,33 @@
+package advertisementCreate
+
+import (
+	"os"
+	"testing"
+
+	"github.com/stretchr/testify/suite"
+
+	"api-tests-template/internal/managers/auth"
+	"api-tests-template/internal/managers/auth/models"
+	base "api-tests-template/tests"
+)
+
+// TestSuite — сценарии создания объявления (POST /advertisement)
+type TestSuite struct {
+	suite.Suite
+	owner models.LoginOkResponse
+}
+
+func TestSuiteRun(t *testing.T) {
+	suite.Run(t, &TestSuite{})
+}
+
+func (s *TestSuite) SetupSuite() {
+	base.SetupSuite()
+
+	base.Precondition("Авторизация пользователя с кредами из переменных окружения")
+	s.owner = auth.Login(s.T(), os.Getenv("TEST_LOGIN"), os.Getenv("TEST_PASSWORD"))
+}
+
+func (s *TestSuite) TearDownSuite() {
+	base.TearDownSuite()
+}

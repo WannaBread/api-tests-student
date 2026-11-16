@@ -3,11 +3,13 @@ package advertisements
 import (
 	"encoding/json"
 	"io"
+	"net/http"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 
 	"api-tests-template/internal/client/http/advertisements"
+	"api-tests-template/internal/helpers/response"
 	"api-tests-template/internal/managers/advertisements/models"
 )
 
@@ -20,7 +22,15 @@ func GetAdvertisementsList(t *testing.T, token, text string) models.Advertisemen
 	body, err := io.ReadAll(raw.Body)
 	require.NoError(t, err, "Не удалось прочитать ответ поиска")
 
-	var response models.AdvertisementsList
-	require.NoError(t, json.Unmarshal(body, &response), "Не удалось разобрать ответ поиска")
-	return response
+	var searchResult models.AdvertisementsList
+	require.NoError(t, json.Unmarshal(body, &searchResult), "Не удалось разобрать ответ поиска")
+	return searchResult
+}
+
+// GetAdvertisementsPageOldestFirst возвращает страницу каталога, отсортированного от старых объявлений к новым;
+// пустой cursor — первая страница.
+func GetAdvertisementsPageOldestFirst(t *testing.T, token string, limit int, cursor string) models.AdvertisementsList {
+	t.Helper()
+	rawResponse := advertisements.HttpGetAdvertisementsPageOldestFirst(t, token, limit, cursor)
+	return response.DecodeJSON[models.AdvertisementsList](t, rawResponse, http.StatusOK, "Получение страницы каталога объявлений")
 }

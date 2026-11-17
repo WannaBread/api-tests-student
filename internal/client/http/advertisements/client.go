@@ -20,8 +20,8 @@ func HttpGetAdvertisements(t *testing.T, token, textForSearch string) *http.Resp
 		End().Response
 }
 
-// HttpGetAdvertisementsPageOldestFirst запрашивает страницу общего каталога, отсортированного от старых объявлений к новым;
-// пустой cursor — первая страница.
+// HttpGetAdvertisementsPageOldestFirst запрашивает страницу общего каталога с сортировкой от старых к новым.
+// Для первой страницы cursor пустой.
 func HttpGetAdvertisementsPageOldestFirst(t *testing.T, token string, limit int, cursor string) *http.Response {
 	t.Helper()
 	request := apiRunner.GetRunner().Auth(token).Create().

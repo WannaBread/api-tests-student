@@ -27,8 +27,8 @@ func GetAdvertisementsList(t *testing.T, token, text string) models.Advertisemen
 	return searchResult
 }
 
-// GetAdvertisementsPageOldestFirst возвращает страницу каталога, отсортированного от старых объявлений к новым;
-// пустой cursor — первая страница.
+// GetAdvertisementsPageOldestFirst возвращает страницу каталога с сортировкой от старых к новым.
+// Для первой страницы cursor пустой.
 func GetAdvertisementsPageOldestFirst(t *testing.T, token string, limit int, cursor string) models.AdvertisementsList {
 	t.Helper()
 	rawResponse := advertisements.HttpGetAdvertisementsPageOldestFirst(t, token, limit, cursor)

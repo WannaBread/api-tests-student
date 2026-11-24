@@ -47,7 +47,19 @@ func (s *TestSuite) TearDownSuite() {
 func (s *TestSuite) createOwnerAdvertisement() advertisementModels.AdvertisementResponse {
 	base.Precondition("Создаём объявление от имени владельца")
 	created := advertisement.CreateTemporaryAdvertisement(s.T(), s.owner.Token,
-		advertisement.NewAdvertisementRequest(advertisement.DefaultPhotosCount))
+		advertisement.NewAdvertisementRequest(base.PhotoPaths(base.DefaultPhotosCount)))
 	base.Precondition("Объявление создано, id=" + created.ID)
 	return created
+}
+
+// createAdvertisements создаёт count объявлений от имени пользователя с токеном token и возвращает их id.
+// Объявления удаляются после завершения теста.
+func (s *TestSuite) createAdvertisements(token string, count int) []string {
+	advertisementIDs := make([]string, 0, count)
+	for range count {
+		created := advertisement.CreateTemporaryAdvertisement(s.T(), token,
+			advertisement.NewAdvertisementRequest(base.PhotoPaths(base.DefaultPhotosCount)))
+		advertisementIDs = append(advertisementIDs, created.ID)
+	}
+	return advertisementIDs
 }

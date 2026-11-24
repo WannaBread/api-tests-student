@@ -8,7 +8,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	advertisementClient "api-tests-template/internal/client/http/advertisement"
-	"api-tests-template/internal/fixtures"
 	"api-tests-template/internal/helpers/response"
 	"api-tests-template/internal/managers/advertisement/models"
 	commonModels "api-tests-template/internal/managers/common/models"
@@ -22,7 +21,6 @@ const (
 	DefaultDescription  = "Объявление создано автотестом"
 	DefaultPrice        = 2499.99
 	DefaultQuantity     = 5
-	DefaultPhotosCount  = 1
 	cleanupLogLabel     = "Cleanup"
 	actionCreate        = "Создание объявления"
 	actionGet           = "Получение объявления по id"
@@ -31,8 +29,9 @@ const (
 	actionGetInvalid    = "Получение объявления по id с ошибкой"
 )
 
-// NewAdvertisementRequest собирает валидный запрос на создание объявления со всеми параметрами и уникальным названием
-func NewAdvertisementRequest(photosCount int) models.CreateAdvertisementRequest {
+// NewAdvertisementRequest собирает валидный запрос на создание объявления со всеми параметрами, уникальным названием
+// и переданными фотографиями (пути к файлам)
+func NewAdvertisementRequest(photos []string) models.CreateAdvertisementRequest {
 	price := DefaultPrice
 	quantity := DefaultQuantity
 	return models.CreateAdvertisementRequest{
@@ -40,7 +39,7 @@ func NewAdvertisementRequest(photosCount int) models.CreateAdvertisementRequest 
 		Description: DefaultDescription,
 		Price:       &price,
 		Quantity:    &quantity,
-		Photos:      fixtures.PhotoPaths(photosCount),
+		Photos:      photos,
 	}
 }
 

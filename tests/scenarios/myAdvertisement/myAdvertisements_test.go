@@ -34,7 +34,7 @@ func (s *TestSuite) SetupSuite() {
 
 	base.Precondition("Создаём объявление, чтобы список собственных объявлений гарантированно был не пустым")
 	advertisement.CreateTemporaryAdvertisement(s.T(), s.loginData.Token,
-		advertisement.NewAdvertisementRequest(advertisement.DefaultPhotosCount))
+		advertisement.NewAdvertisementRequest(base.PhotoPaths(base.DefaultPhotosCount)))
 }
 
 func (s *TestSuite) TearDownSuite() {

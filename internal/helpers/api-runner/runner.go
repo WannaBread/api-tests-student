@@ -14,6 +14,9 @@ const (
 	defaultUserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"
 )
 
+// httpClient общий для всех запросов: переиспользует соединения и повторяет запрос при HTTP 503 от стенда
+var httpClient = &http.Client{Transport: retryTransport{next: http.DefaultTransport}}
+
 type ApiTest struct {
 	token     string
 	userAgent string
@@ -38,7 +41,7 @@ func (at *ApiTest) Auth(token string) *ApiTest {
 }
 
 func (at *ApiTest) Create() *apitest.APITest {
-	apitestNew := apitest.New().EnableNetworking()
+	apitestNew := apitest.New().EnableNetworking(httpClient)
 	if os.Getenv("DEBUG") == "true" {
 		apitestNew = apitestNew.Debug()
 	}

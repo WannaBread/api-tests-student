@@ -7,7 +7,6 @@ import (
 	"api-tests-template/internal/assertions"
 	"api-tests-template/internal/constants/apierrors"
 	"api-tests-template/internal/constants/limits"
-	"api-tests-template/internal/fixtures"
 	"api-tests-template/internal/managers/advertisement"
 	"api-tests-template/internal/managers/advertisement/models"
 	"api-tests-template/internal/utils"
@@ -84,7 +83,7 @@ func (s *TestSuite) TestCreateAdvertisementWithInvalidParameters() {
 		{
 			name: "Фотографий больше максимума",
 			modifyRequest: func(r *models.CreateAdvertisementRequest) {
-				r.Photos = fixtures.PhotoPaths(limits.MaxPhotosCount + 1)
+				r.Photos = base.PhotoPaths(limits.MaxPhotosCount + 1)
 			},
 			expectedMessage: apierrors.MessageTooManyPhotos,
 		},
@@ -93,7 +92,7 @@ func (s *TestSuite) TestCreateAdvertisementWithInvalidParameters() {
 	for _, tc := range cases {
 		s.Run(tc.name, func() {
 			base.Precondition("Собираем валидный запрос и портим в нём один параметр: " + tc.name)
-			request := advertisement.NewAdvertisementRequest(advertisement.DefaultPhotosCount)
+			request := advertisement.NewAdvertisementRequest(base.PhotoPaths(base.DefaultPhotosCount))
 			tc.modifyRequest(&request)
 
 			base.Step("Отправляем запрос на создание объявления")

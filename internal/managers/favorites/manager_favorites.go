@@ -4,12 +4,9 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/stretchr/testify/require"
-
 	favoritesClient "api-tests-template/internal/client/http/favorites"
 	"api-tests-template/internal/constants/limits"
 	"api-tests-template/internal/helpers/response"
-	"api-tests-template/internal/managers/advertisements"
 	commonModels "api-tests-template/internal/managers/common/models"
 	"api-tests-template/internal/managers/favorites/models"
 )
@@ -72,27 +69,4 @@ func RemoveFavoriteExpectingError(t *testing.T, token, advertisementID string, e
 	t.Helper()
 	rawResponse := favoritesClient.HttpDeleteFavorite(t, token, advertisementID)
 	return response.DecodeJSON[commonModels.ErrorResponse](t, rawResponse, expectedStatus, actionRemoveError)
-}
-
-// FillFavoritesToLimit заполняет избранное пользователя объявлениями из общего каталога до лимита MaxFavoritesPerUser.
-// Берём самые старые объявления, их реже удаляют, и лимит не сбивается во время теста.
-// Пользователь должен быть новым, иначе в каталоге могут попасться его собственные объявления.
-func FillFavoritesToLimit(t *testing.T, token string) {
-	t.Helper()
-	cursor := ""
-	for {
-		page := advertisements.GetAdvertisementsPageOldestFirst(t, token, limits.MaxPageSize, cursor)
-		advertisementIDs := make([]string, 0, len(page.Items))
-		for _, item := range page.Items {
-			advertisementIDs = append(advertisementIDs, item.ID)
-		}
-		BulkAddFavorites(t, token, advertisementIDs)
-
-		if GetFavorites(t, token).Total >= limits.MaxFavoritesPerUser {
-			return
-		}
-		require.Truef(t, page.HasNext,
-			"В каталоге недостаточно объявлений, чтобы заполнить избранное до лимита %d", limits.MaxFavoritesPerUser)
-		cursor = page.NextCursor
-	}
 }

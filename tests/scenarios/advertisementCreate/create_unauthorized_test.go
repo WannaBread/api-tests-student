@@ -14,7 +14,7 @@ import (
 func (s *TestSuite) TestCreateAdvertisementUnauthorized() {
 	for _, tc := range base.UnauthorizedCases() {
 		s.Run(tc.Name, func() {
-			request := advertisement.NewAdvertisementRequest(advertisement.DefaultPhotosCount)
+			request := advertisement.NewAdvertisementRequest(base.PhotoPaths(base.DefaultPhotosCount))
 
 			base.Step(fmt.Sprintf("Создаём объявление %q: %s", request.Title, tc.Name))
 			errorResponse := advertisement.CreateAdvertisementExpectingError(s.T(), tc.Token, request, http.StatusUnauthorized)

@@ -15,7 +15,7 @@ import (
 
 // Positive: создание объявления со всеми параметрами и максимальным количеством фотографий
 func (s *TestSuite) TestCreateAdvertisementWithAllParameters() {
-	request := advertisement.NewAdvertisementRequest(limits.MaxPhotosCount)
+	request := advertisement.NewAdvertisementRequest(base.PhotoPaths(limits.MaxPhotosCount))
 	base.Step(fmt.Sprintf("Создаём объявление %q: description=%q, price=%v, quantity=%d, фотографий: %d",
 		request.Title, request.Description, *request.Price, *request.Quantity, len(request.Photos)))
 	created := advertisement.CreateTemporaryAdvertisement(s.T(), s.owner.Token, request)

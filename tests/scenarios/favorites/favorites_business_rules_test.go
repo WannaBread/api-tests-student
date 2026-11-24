@@ -45,14 +45,17 @@ func (s *TestSuite) TestAddOwnAdvertisement() {
 
 // Negative: добавление в избранное сверх лимита MaxFavoritesPerUser возвращает 400
 func (s *TestSuite) TestAddFavoriteOverLimit() {
-	base.Precondition("Регистрируем отдельного пользователя, чтобы заполнение лимита не влияло на другие тесты")
+	base.Precondition("Регистрируем отдельных продавца и покупателя, чтобы тест не зависел от данных на стенде")
+	seller := auth.RegisterRandomUser(s.T())
 	limitedUser := auth.RegisterRandomUser(s.T())
 
-	base.Precondition(fmt.Sprintf("Заполняем избранное пользователя до лимита %d объявлениями из каталога",
+	base.Precondition(fmt.Sprintf("Продавец создаёт %d объявлений, покупатель добавляет их в избранное",
 		limits.MaxFavoritesPerUser))
-	favorites.FillFavoritesToLimit(s.T(), limitedUser.Token)
+	advertisementIDs := s.createAdvertisements(seller.Token, limits.MaxFavoritesPerUser)
+	favorites.BulkAddFavorites(s.T(), limitedUser.Token, advertisementIDs)
+	require.Equal(s.T(), limits.MaxFavoritesPerUser, favorites.GetFavorites(s.T(), limitedUser.Token).Total,
+		"Избранное покупателя не заполнено до лимита")
 
-	// Объявление создаётся после заполнения лимита, чтобы не попасть в избранное вместе с объявлениями каталога
 	ad := s.createOwnerAdvertisement()
 
 	base.Step("Пользователь добавляет в избранное ещё одно объявление")

@@ -43,7 +43,7 @@ func (s *TestSuite) SetupSuite() {
 	s.loginData = auth.Login(s.T(), os.Getenv("TEST_LOGIN"), os.Getenv("TEST_PASSWORD"))
 
 	base.Precondition("Создаём объявление с уникальным названием для поиска")
-	request := advertisement.NewAdvertisementRequest(advertisement.DefaultPhotosCount)
+	request := advertisement.NewAdvertisementRequest(base.PhotoPaths(base.DefaultPhotosCount))
 	request.Title = utils.RandomString(searchTitleLength)
 	s.searchAd = advertisement.CreateTemporaryAdvertisement(s.T(), s.loginData.Token, request)
 
